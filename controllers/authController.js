@@ -30,4 +30,35 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { login };
+// register
+const register = async (req, res) => {
+  try {
+    // get data from request
+    const { firstName, lastName, email, phone, password } = req.body;
+    // check if user with email already exists
+    if (await User.exists({ email })) {
+      throw new CustomError("Email is taken");
+    }
+    // check if user with phone already exists
+    if (await User.exists({ phone })) {
+      throw new CustomError("Phone is taken");
+    }
+    // create user with request data
+    const newUser = new User({ firstName, lastName, email, phone, password });
+    // upload image
+    // if (req.file) {
+    // }
+    //  schema validation
+    await newUser.validate();
+
+    await newUser.save();
+
+    return res
+      .status(201)
+      .json({ message: "Account created", user_id: newUser.id });
+  } catch (error) {
+    handleError(res, error, "Registration failed");
+  }
+};
+
+module.exports = { login, register };
