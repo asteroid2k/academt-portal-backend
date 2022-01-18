@@ -107,10 +107,18 @@ const createBatchValidator = [
   body("instructions").notEmpty().withMessage("Provide instructions"),
 ];
 
+//assessment validator
+const assessmentValidator = [
+  body("name").notEmpty().withMessage("Assessment name is required"),
+  body("batch_slug").notEmpty().withMessage("Batch id/slug is required"),
+  body("questions").isArray({ min: 2 }).withMessage("Invalid questions type"),
+];
+
 module.exports = {
   errorFormatter,
   registerValidator,
   loginValidator,
   idValidator,
   createBatchValidator,
+  assessmentValidator,
 };
