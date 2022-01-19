@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const questionSchema = require("./Question");
+const { questionSchema, answerSchema } = require("./Question");
 
 const assessmentSchema = new mongoose.Schema({
   batch_id: {
@@ -9,6 +9,7 @@ const assessmentSchema = new mongoose.Schema({
   },
   name: { type: String, required: true },
   questions: { type: [questionSchema], required: true },
+  answers: { type: [answerSchema], required: true },
 });
 
 const Assessment = mongoose.model("Assessment", assessmentSchema);

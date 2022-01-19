@@ -2,10 +2,11 @@ const Batch = require("../models/Batch");
 const { CustomError, handleError } = require("../util/errors");
 
 const getBatches = async (req, res) => {
+  const today = new Date().toISOString();
   try {
     const { ongoing } = req.query;
     if (ongoing === "true") {
-      const batches = await Batch.find().where("closure_date").gt(new Date());
+      const batches = await Batch.find().where("closure_date").gt(today);
       return res.status(200).json({ count: batches.length, batches });
     }
 
