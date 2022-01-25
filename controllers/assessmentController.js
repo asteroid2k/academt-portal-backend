@@ -1,6 +1,7 @@
 const Assessment = require("../models/Assessment");
 const Batch = require("../models/Batch");
 const { CustomError, handleError } = require("../util/errors");
+const Result = require("../models/Result");
 
 // get all assessments
 const getAssessments = async (req, res) => {
@@ -11,10 +12,12 @@ const getAssessments = async (req, res) => {
     handleError(res, error, "Could not fetch assessments");
   }
 };
-// get specific assessments
+// get specific assessment using batch id
 const getAssessment = async (req, res) => {
   try {
-    const assessment = await Assessment.findById(req.params.id, "-answers");
+    const assessment = await Assessment.findOne({
+      batch_id: req.params.id,
+    });
     if (!assessment) {
       throw new CustomError("Not found", 404);
     }
@@ -26,9 +29,9 @@ const getAssessment = async (req, res) => {
 // create assessment
 const createAssessment = async (req, res) => {
   try {
-    const { name, batch_slug, questions, answers } = req.body;
+    const { name, batch_id, questions, answers } = req.body;
 
-    const batch = await Batch.findOne({ slug: batch_slug });
+    const batch = await Batch.findById(batch_id);
     if (!batch) {
       throw new CustomError("Could not find associated batch/application");
     }
@@ -44,16 +47,58 @@ const createAssessment = async (req, res) => {
     });
     await newAssessment.validate();
     newAssessment.save();
-    res
-      .status(201)
-      .json({
-        message: "Assessment created",
-        assessment_id: newAssessment.id,
-        batch: `${batch.name}[${batch.slug}]`,
-      });
+    res.status(201).json({
+      message: "Assessment created",
+      assessment_id: newAssessment.id,
+      batch: `${batch.name}[${batch.slug}]`,
+    });
   } catch (error) {
     handleError(res, error, "Could not create assessment");
   }
 };
 
-module.exports = { getAssessments, createAssessment, getAssessment };
+// take assessment
+const takeAssessment = async (req, res) => {
+  try {
+    const { user } = req;
+
+    const assessment = await Assessment.findOne({
+      batch_id: req.params.id,
+    });
+    if (!assessment) {
+      throw new CustomError("Assessment not found", 404);
+    }
+
+    const answers = req.body.answers;
+    const correctAnswers = assessment.answers;
+    let score = 0;
+    for (let i = 0; i < answers.length; i++) {
+      let answer = answers[i];
+      const Cans = correctAnswers.find(function (ans) {
+        return ans.num === answer.num;
+      });
+
+      if (Cans.value === answer.value) score++;
+    }
+    console.log("Score", score);
+    const result = new Result({
+      answers,
+      score,
+      user_id: user.id,
+      batch_id: req.params.id,
+    });
+    await result.validate();
+    let saved = await result.save();
+    res.status(200).json({ result: saved });
+  } catch (error) {
+    console.log(error);
+    handleError(res, error, "Could not fetch assessments");
+  }
+};
+
+module.exports = {
+  getAssessments,
+  createAssessment,
+  getAssessment,
+  takeAssessment,
+};

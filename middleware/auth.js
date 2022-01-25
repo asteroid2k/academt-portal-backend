@@ -1,6 +1,6 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const { User } = require("../models/User");
+const User = require("../models/User");
 const { TokenExpiredError } = jwt;
 
 // Check and verify  JWT in request
@@ -28,6 +28,7 @@ const verifyToken = (req, res, next) => {
       }
       req.user = user;
     } catch (error) {
+      console.log(error);
       return res.status(401).json({ message: "Authentication failed" });
     }
     next();
@@ -35,7 +36,7 @@ const verifyToken = (req, res, next) => {
 };
 
 const verifyAdmin = (req, res, next) => {
-  const { user } = req.body;
+  const { user } = req;
   if (!user) {
     res.sendStatus(401);
   }

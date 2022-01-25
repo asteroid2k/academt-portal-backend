@@ -3,6 +3,7 @@ const { createBatch, getBatches } = require("../controllers/batchController");
 const { validateData } = require("../middleware/validation");
 const { createBatchValidator } = require("../util/validators");
 const { imageUploader } = require("../middleware/validation");
+const { verifyToken, verifyAdmin } = require("../middleware/auth");
 
 const batchRouter = Router();
 
@@ -12,6 +13,8 @@ batchRouter.get("/", getBatches);
 // create a batch
 batchRouter.post(
   "/",
+  verifyToken,
+  verifyAdmin,
   imageUploader("image"),
   validateData(createBatchValidator),
   createBatch

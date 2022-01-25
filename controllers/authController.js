@@ -18,7 +18,7 @@ const login = async (req, res) => {
       throw new CustomError("Invalid credentials");
     }
 
-    const token = createJWT({ email, name: user.name });
+    const token = createJWT({ email, name: user.firstName });
     if (!token) {
       throw new CustomError("Could not authenticate");
     }
@@ -26,6 +26,32 @@ const login = async (req, res) => {
     return res.status(200).json({ message: "Authenticated", token });
   } catch (error) {
     // handle errors
+    handleError(res, error, "Authentication failed");
+  }
+};
+const loginAdmin = async (req, res) => {
+  try {
+    // get data from request
+    const { email, password } = req.body;
+
+    // check if user  exists
+    const user = await User.findOne({ email, isAdmin: true });
+    if (!user) {
+      throw new CustomError("Invalid credentials");
+    }
+
+    // verify password
+    if (!(await user.verifyPassword(password))) {
+      throw new CustomError("Invalid credentials");
+    }
+
+    const token = createJWT({ email, name: user.name });
+    if (!token) {
+      throw new CustomError("Could not authenticate");
+    }
+
+    return res.status(200).json({ message: "Authenticated", token });
+  } catch (error) {
     handleError(res, error, "Authentication failed");
   }
 };
@@ -61,4 +87,4 @@ const register = async (req, res) => {
   }
 };
 
-module.exports = { login, register };
+module.exports = { login, register, loginAdmin };
