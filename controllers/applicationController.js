@@ -2,8 +2,21 @@ const Application = require("../models/Application");
 const Batch = require("../models/Batch");
 const { CustomError, handleError } = require("../util/errors");
 
+const getApplications = async (req, res) => {
+  try {
+    const applications = await Application.find();
+    res.status(200).json({ count: applications.length, applications });
+  } catch (error) {
+    // handle errors
+    handleError(res, error, "Could not fetch applications");
+  }
+};
+
 const submitApplication = async (req, res) => {
   try {
+    if (req.file) {
+      console.log(req.file);
+    }
     const { user } = req;
     const { id } = req.params;
     const batch = await Batch.findById(id);
@@ -20,6 +33,8 @@ const submitApplication = async (req, res) => {
 
     await newApp.validate();
     await newApp.save();
+    batch.app_count++;
+    batch.save();
 
     res.status(201).json({
       message: "Application submitted",
@@ -32,4 +47,4 @@ const submitApplication = async (req, res) => {
   }
 };
 
-module.exports = { submitApplication };
+module.exports = { submitApplication, getApplications };
