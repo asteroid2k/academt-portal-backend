@@ -7,7 +7,7 @@ const assessmentSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  name: { type: String, required: true },
+  name: { type: String },
   questions: { type: [questionSchema], required: true },
   answers: { type: [answerSchema], required: true },
 });

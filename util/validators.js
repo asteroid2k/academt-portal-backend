@@ -76,9 +76,7 @@ const idValidator = [
 
 const createBatchValidator = [
   body("name")
-    .notEmpty()
-    .withMessage("Name is required")
-    .bail()
+    .optional()
     .trim()
     .isLength({ min: 4 })
     .withMessage("Name is too short"),
@@ -103,7 +101,7 @@ const createBatchValidator = [
 
 //assessment validator
 const assessmentValidator = [
-  body("name").notEmpty().withMessage("Assessment name is required"),
+  body("name").optional(),
   body("batch_id").notEmpty().withMessage("Batch id is required"),
   body("questions").isArray({ min: 1 }).withMessage("Invalid questions type"),
   body("answers").isArray({ min: 1 }).withMessage("Invalid answers type"),

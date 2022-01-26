@@ -23,7 +23,9 @@ const login = async (req, res) => {
       throw new CustomError("Could not authenticate");
     }
 
-    return res.status(200).json({ message: "Authenticated", token });
+    return res
+      .status(200)
+      .json({ message: "Authenticated", token, isAdmin: user.isAdmin });
   } catch (error) {
     // handle errors
     handleError(res, error, "Authentication failed");
@@ -50,7 +52,9 @@ const loginAdmin = async (req, res) => {
       throw new CustomError("Could not authenticate");
     }
 
-    return res.status(200).json({ message: "Authenticated", token });
+    return res
+      .status(200)
+      .json({ message: "Authenticated", token, isAdmin: user.isAdmin });
   } catch (error) {
     handleError(res, error, "Authentication failed");
   }

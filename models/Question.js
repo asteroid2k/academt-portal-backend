@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const questionSchema = new mongoose.Schema({
   image: String,
   num: Number,
-  question: { type: String, required: true },
+  text: { type: String, required: true },
   options: { type: [{ opt: String, value: String }], required: true },
 });
 

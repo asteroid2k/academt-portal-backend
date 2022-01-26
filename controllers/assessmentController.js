@@ -48,9 +48,9 @@ const createAssessment = async (req, res) => {
     await newAssessment.validate();
     newAssessment.save();
     res.status(201).json({
-      message: "Assessment created",
+      message: `Assessment created for ${batch.slug}`,
       assessment_id: newAssessment.id,
-      batch: `${batch.name}[${batch.slug}]`,
+      batch: batch.id,
     });
   } catch (error) {
     handleError(res, error, "Could not create assessment");

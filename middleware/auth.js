@@ -22,7 +22,7 @@ const verifyToken = (req, res, next) => {
     }
     // set user object if authenticated
     try {
-      const user = await User.findOne({ email: payload.email });
+      const user = await User.findOne({ email: payload.email }, "-password");
       if (!user) {
         return res.status(401).json({ message: "Invalid Token" });
       }
@@ -38,10 +38,10 @@ const verifyToken = (req, res, next) => {
 const verifyAdmin = (req, res, next) => {
   const { user } = req;
   if (!user) {
-    res.sendStatus(401);
+    return res.sendStatus(401);
   }
   if (!user.isAdmin) {
-    res.sendStatus(403);
+    return res.sendStatus(403);
   }
   next();
 };
