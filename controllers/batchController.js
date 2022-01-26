@@ -1,5 +1,7 @@
 const Batch = require("../models/Batch");
 const { CustomError, handleError } = require("../util/errors");
+const cloudinary = require("../config/cloudinary");
+const DatauriParser = require("datauri/parser");
 
 const getBatches = async (req, res) => {
   const today = new Date().toISOString();
@@ -11,27 +13,40 @@ const getBatches = async (req, res) => {
     }
 
     const batches = await Batch.find();
+    batches.forEach((batch) => {
+      if (batch.closure_date < today) {
+        console.log("close");
+        batch.isClosed = true;
+        batch.save();
+      }
+    });
 
     res.status(200).json({ count: batches.length, batches, ongoing });
   } catch (error) {
     // handle errors
-    handleError(res, error, "Authentication failed");
+    handleError(res, error, "Could not fetch batches");
   }
 };
 
 const createBatch = async (req, res) => {
   try {
     // get data from request
-    const { name, slug, closure_date, isClosed, instructions } = req.body;
+    const { slug, closure_date, isClosed, instructions } = req.body;
+
+    // check for ongoing batch
+    if (
+      await Batch.findOne().where("closure_date").gt(new Date().toISOString())
+    ) {
+      throw new CustomError("There is an ongoing batch/application");
+    }
 
     // check if user  exists
-    const batch = await Batch.exists({ slug });
-    if (batch) {
+    if (await Batch.exists({ slug })) {
       throw new CustomError("Batch with Id/Slug already exists");
     }
 
     const newBatch = new Batch({
-      name,
+      // name,
       slug,
       closure_date,
       isClosed,
@@ -39,13 +54,26 @@ const createBatch = async (req, res) => {
     });
     // validate document before saving
     await newBatch.validate();
-    newBatch.save();
+    if (req.file) {
+      console.log(req.file);
+      if (req.file.size > 500000) {
+        throw new CustomError("File too large");
+      }
+      const parser = new DatauriParser();
+      const mimetype = `.${req.file.mimetype.split("/")[1]}`;
+      const fileStr = parser.format(mimetype, req.file.buffer);
+      const upload = await cloudinary.uploader.upload(fileStr.content, {
+        folder: "portal",
+      });
+      newBatch.image = upload.secure_url;
+    }
 
+    newBatch.save();
     return res
       .status(201)
       .json({ message: "Batch created", batch_id: newBatch.id });
   } catch (error) {
-    handleError(res, error, "Authentication failed");
+    handleError(res, error, "Could not create batch");
   }
 };
 

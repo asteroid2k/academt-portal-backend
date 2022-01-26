@@ -1,8 +1,7 @@
 const { Router } = require("express");
 const { createBatch, getBatches } = require("../controllers/batchController");
-const { validateData } = require("../middleware/validation");
+const { validateData, validateImage } = require("../middleware/validation");
 const { createBatchValidator } = require("../util/validators");
-const { imageUploader } = require("../middleware/validation");
 const { verifyToken, verifyAdmin } = require("../middleware/auth");
 
 const batchRouter = Router();
@@ -15,7 +14,7 @@ batchRouter.post(
   "/",
   verifyToken,
   verifyAdmin,
-  imageUploader("image"),
+  validateImage,
   validateData(createBatchValidator),
   createBatch
 );
