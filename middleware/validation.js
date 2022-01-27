@@ -41,7 +41,12 @@ const validateFiles = (req, res, next) => {
 };
 
 // image validator config
-const ACCEPTED_MIMES = ["image/png", "image/jpg", "image/jpeg", "file/pdf"];
+const ACCEPTED_MIMES = [
+  "image/png",
+  "image/jpg",
+  "image/jpeg",
+  "application/pdf",
+];
 const fileValidator = (req, file, cb) => {
   if (!ACCEPTED_MIMES.includes(file.mimetype)) {
     return cb(

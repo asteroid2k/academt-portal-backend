@@ -88,11 +88,11 @@ const takeAssessment = async (req, res) => {
       batch_id: req.params.id,
     });
     await result.validate();
-    let saved = await result.save();
-    res.status(200).json({ result: saved });
+    await result.save();
+    res.status(200).json({ message: "Assessment submitted" });
   } catch (error) {
     console.log(error);
-    handleError(res, error, "Could not fetch assessments");
+    handleError(res, error, "Could not submit assessment");
   }
 };
 
