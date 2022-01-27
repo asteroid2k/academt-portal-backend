@@ -14,6 +14,7 @@ const applicationSchema = new mongoose.Schema({
   age: { type: Number },
   university: { type: String, required: true },
   isApproved: { type: Boolean, default: false },
+  created_at: { type: String, default: new Date().toISOString() },
 });
 
 const Application = mongoose.model("Application", applicationSchema);

@@ -11,11 +11,24 @@ const getApplications = async (req, res) => {
     handleError(res, error, "Could not fetch applications");
   }
 };
+const getUserApplication = async (req, res) => {
+  try {
+    const { user } = req;
+    const application = await Application.findOne({ user_id: user.id });
+    if (!application) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+    res.status(200).json({ application });
+  } catch (error) {
+    // handle errors
+    handleError(res, error, "Could not fetch application");
+  }
+};
 
 const submitApplication = async (req, res) => {
   try {
-    if (req.file) {
-      console.log(req.file);
+    if (req.files) {
+      console.log(req.files);
     }
     const { user } = req;
     const { id } = req.params;
@@ -34,7 +47,9 @@ const submitApplication = async (req, res) => {
     await newApp.validate();
     await newApp.save();
     batch.app_count++;
-    batch.save();
+    await batch.save();
+
+    //TODO Upload pdf and image
 
     res.status(201).json({
       message: "Application submitted",
@@ -47,4 +62,4 @@ const submitApplication = async (req, res) => {
   }
 };
 
-module.exports = { submitApplication, getApplications };
+module.exports = { submitApplication, getApplications, getUserApplication };
