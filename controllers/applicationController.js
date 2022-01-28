@@ -1,5 +1,6 @@
 const Application = require("../models/Application");
 const Batch = require("../models/Batch");
+const User = require("../models/User");
 const { CustomError, handleError } = require("../util/errors");
 const { uploadFile } = require("../util/helpers");
 
@@ -86,6 +87,7 @@ const updateApplicationStatus = async (req, res) => {
     }
     application.isApproved = status;
     await application.save();
+
     res.status(200).json({ message: `Application updated (${status})` });
   } catch (error) {
     handleError(res, error, "Application update failed");

@@ -1,4 +1,5 @@
 const Assessment = require("../models/Assessment");
+const Application = require("../models/Application");
 const Batch = require("../models/Batch");
 const { CustomError, handleError } = require("../util/errors");
 const Result = require("../models/Result");
@@ -9,7 +10,7 @@ const getAssessments = async (req, res) => {
     const assessments = await Assessment.find(
       {},
       "-questions -answers"
-    ).populate("batch_id");
+    ).populate("batch_id", "slug isClosed closure_date");
     assessments.forEach((assessment) => {
       if (assessment.batch_id.isClosed) {
         assessment.status = "taken";
@@ -54,8 +55,10 @@ const createAssessment = async (req, res) => {
       questions,
       answers,
     });
+
     await newAssessment.validate();
     newAssessment.save();
+
     res.status(201).json({
       message: `Assessment created for ${batch.slug}`,
       assessment_id: newAssessment.id,
@@ -73,6 +76,15 @@ const takeAssessment = async (req, res) => {
   try {
     const { user } = req;
     const { id } = req.params;
+    const { answers, application } = req.body;
+
+    const uApplication = await Application.findById(application);
+    if (!uApplication) {
+      throw new CustomError("Your application was not found");
+    }
+    if (uApplication.isApproved !== "approved") {
+      throw new CustomError("Your application is not approved");
+    }
 
     const assessment = await Assessment.findOne({
       batch_id: id,
@@ -84,7 +96,6 @@ const takeAssessment = async (req, res) => {
       throw new CustomError("You have already taken this assessment");
     }
 
-    const answers = req.body.answers;
     const correctAnswers = assessment.answers;
     let score = 0;
     for (let i = 0; i < answers.length; i++) {
@@ -95,15 +106,16 @@ const takeAssessment = async (req, res) => {
 
       if (Cans.value === answer.value) score++;
     }
-    console.log("Score", score);
     const result = new Result({
       answers,
       score,
       user_id: user.id,
       batch_id: req.params.id,
+      application,
     });
     await result.validate();
     await result.save();
+
     res.status(200).json({ message: "Assessment submitted" });
   } catch (error) {
     handleError(res, error, "Could not submit assessment");
