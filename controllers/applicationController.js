@@ -51,13 +51,15 @@ const submitApplication = async (req, res) => {
     batch.app_count++;
     await batch.save();
 
-    if (req.files.length) {
+    if (req.files) {
       const { image, cv } = req.files;
-      if (image[0].size > 500000 || cv[0].size > 500000) {
-        throw new CustomError("File too large");
+      if (image && cv) {
+        if (image[0].size > 500000 || cv[0].size > 500000) {
+          throw new CustomError("File too large");
+        }
+        newApp.cv = await uploadFile(cv[0]);
+        newApp.image = await uploadFile(image[0]);
       }
-      newApp.cv = await uploadFile(cv[0]);
-      newApp.image = await uploadFile(image[0]);
     }
 
     await newApp.validate();

@@ -6,7 +6,16 @@ const Result = require("../models/Result");
 // get all assessments
 const getAssessments = async (req, res) => {
   try {
-    const assessments = await Assessment.find({}, "-questions -answers");
+    const assessments = await Assessment.find(
+      {},
+      "-questions -answers"
+    ).populate("batch_id");
+    assessments.forEach((assessment) => {
+      if (assessment.batch_id.isClosed) {
+        assessment.status = "taken";
+        assessment.save();
+      }
+    });
     res.status(200).json({ assessments });
   } catch (error) {
     handleError(res, error, "Could not fetch assessments");
