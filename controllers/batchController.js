@@ -1,7 +1,6 @@
 const Batch = require("../models/Batch");
 const { CustomError, handleError } = require("../util/errors");
-const cloudinary = require("../config/cloudinary");
-const DatauriParser = require("datauri/parser");
+const { uploadFile } = require("../util/helpers");
 
 const getBatches = async (req, res) => {
   const today = new Date().toISOString();
@@ -59,13 +58,8 @@ const createBatch = async (req, res) => {
       if (req.file.size > 500000) {
         throw new CustomError("File too large");
       }
-      const parser = new DatauriParser();
-      const mimetype = `.${req.file.mimetype.split("/")[1]}`;
-      const fileStr = parser.format(mimetype, req.file.buffer);
-      const upload = await cloudinary.uploader.upload(fileStr.content, {
-        folder: "portal",
-      });
-      newBatch.image = upload.secure_url;
+
+      newBatch.image = await uploadFile(req.file);
     }
 
     newBatch.save();

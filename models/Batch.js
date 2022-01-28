@@ -8,7 +8,7 @@ const batchSchema = new mongoose.Schema({
   image: String,
   instructions: String,
   app_count: { type: Number, default: 0 },
-  started_at: { type: Date, default: new Date() },
+  started_at: { type: Date, default: new Date().toISOString() },
 });
 
 const Batch = mongoose.model("Batch", batchSchema);

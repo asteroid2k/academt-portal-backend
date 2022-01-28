@@ -102,7 +102,10 @@ const createBatchValidator = [
 //assessment validator
 const assessmentValidator = [
   body("name").optional(),
-  body("batch_id").notEmpty().withMessage("Batch id is required"),
+  body("batch_id")
+    .isLength({ min: 24, max: 24 })
+    .notEmpty()
+    .withMessage("Batch id is required"),
   body("questions").isArray({ min: 1 }).withMessage("Invalid questions type"),
   body("answers").isArray({ min: 1 }).withMessage("Invalid answers type"),
 ];
@@ -128,6 +131,20 @@ const quizValidator = [
   ...idValidator,
   body("answers").isArray({ min: 1 }).withMessage("Answers required"),
 ];
+const applicationStatusValidator = [
+  body("id").isLength({ min: 24, max: 24 }).withMessage("Invalid id"),
+  body("status")
+    .toLowerCase()
+    .custom((value) => {
+      console.log(value);
+      if (!["approved", "declined"].includes(value)) {
+        return Promise.reject(
+          "Invalid application status.['approved','declined']"
+        );
+      }
+      return Promise.resolve();
+    }),
+];
 
 module.exports = {
   errorFormatter,
@@ -138,4 +155,5 @@ module.exports = {
   assessmentValidator,
   submitApplicationValidator,
   quizValidator,
+  applicationStatusValidator,
 };

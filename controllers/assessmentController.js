@@ -29,7 +29,7 @@ const getAssessment = async (req, res) => {
 // create assessment
 const createAssessment = async (req, res) => {
   try {
-    const { name, batch_id, questions, answers } = req.body;
+    const { batch_id, questions, answers } = req.body;
 
     const batch = await Batch.findById(batch_id);
     if (!batch) {
@@ -40,7 +40,7 @@ const createAssessment = async (req, res) => {
     }
 
     const newAssessment = new Assessment({
-      name,
+      slug: batch.slug,
       batch_id: batch.id,
       questions,
       answers,
@@ -53,6 +53,8 @@ const createAssessment = async (req, res) => {
       batch: batch.id,
     });
   } catch (error) {
+    console.log(error);
+
     handleError(res, error, "Could not create assessment");
   }
 };
@@ -61,12 +63,16 @@ const createAssessment = async (req, res) => {
 const takeAssessment = async (req, res) => {
   try {
     const { user } = req;
+    const { id } = req.params;
 
     const assessment = await Assessment.findOne({
-      batch_id: req.params.id,
+      batch_id: id,
     });
     if (!assessment) {
       throw new CustomError("Assessment not found", 404);
+    }
+    if (await Result.findOne({ user_id: user.id, batch_id: id })) {
+      throw new CustomError("You have already taken this assessment");
     }
 
     const answers = req.body.answers;
@@ -91,7 +97,6 @@ const takeAssessment = async (req, res) => {
     await result.save();
     res.status(200).json({ message: "Assessment submitted" });
   } catch (error) {
-    console.log(error);
     handleError(res, error, "Could not submit assessment");
   }
 };

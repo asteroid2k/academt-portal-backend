@@ -3,12 +3,14 @@ const {
   submitApplication,
   getApplications,
   getUserApplication,
+  updateApplicationStatus,
 } = require("../controllers/applicationController");
 const { validateData, validateFiles } = require("../middleware/validation");
 const { verifyToken, verifyAdmin } = require("../middleware/auth");
 const {
   submitApplicationValidator,
   idValidator,
+  applicationStatusValidator,
 } = require("../util/validators");
 
 const applicationRouter = Router();
@@ -24,6 +26,14 @@ applicationRouter.post(
   validateData(idValidator),
   validateData(submitApplicationValidator),
   submitApplication
+);
+
+applicationRouter.post(
+  "/status",
+  verifyToken,
+  verifyAdmin,
+  validateData(applicationStatusValidator),
+  updateApplicationStatus
 );
 
 module.exports = applicationRouter;

@@ -13,7 +13,9 @@ const applicationSchema = new mongoose.Schema({
   gpa: { type: String, required: true },
   age: { type: Number },
   university: { type: String, required: true },
-  isApproved: { type: Boolean, default: false },
+  isApproved: { type: String, default: "pending" },
+  cv: String,
+  image: String,
   created_at: { type: String, default: new Date().toISOString() },
 });
 
