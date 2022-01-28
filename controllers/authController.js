@@ -80,7 +80,7 @@ const register = async (req, res) => {
     // }
     //  schema validation
     await newUser.validate();
-
+    await newUser.hashPassword();
     await newUser.save();
 
     return res

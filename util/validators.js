@@ -130,6 +130,7 @@ const submitApplicationValidator = [
 const quizValidator = [
   ...idValidator,
   body("answers").isArray({ min: 1 }).withMessage("Answers required"),
+  body("application").notEmpty().isMongoId(),
 ];
 const applicationStatusValidator = [
   body("id").isLength({ min: 24, max: 24 }).withMessage("Invalid id"),

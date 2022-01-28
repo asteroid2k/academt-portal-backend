@@ -12,13 +12,11 @@ const userSchema = new mongoose.Schema({
 
 // HOOKS
 
-// add salt and hash password before saving user
-userSchema.pre("save", async function (next) {
+// add salt and hash password
+userSchema.methods.hashPassword = async function () {
   const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
-
+};
 userSchema.methods.verifyPassword = async function (password) {
   const match = await bcrypt.compare(password, this.password);
   return match;
