@@ -66,6 +66,10 @@ const submitApplication = async (req, res) => {
     await newApp.validate();
     await newApp.save();
 
+    // add update
+    user.updates.push({ text: `[${batch.slug}]: Application submitted` });
+    await user.save();
+
     res.status(201).json({
       message: "Application submitted",
       application_id: newApp.id,
@@ -87,6 +91,14 @@ const updateApplicationStatus = async (req, res) => {
     }
     application.isApproved = status;
     await application.save();
+
+    const user = await User.findById(application.user_id);
+    if (user) {
+      user.updates.push({
+        text: `[${application.batch_slug}]: Application ${status}`,
+      });
+      await user.save();
+    }
 
     res.status(200).json({ message: `Application updated (${status})` });
   } catch (error) {

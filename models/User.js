@@ -8,6 +8,12 @@ const userSchema = new mongoose.Schema({
   phone: { type: String, unique: true, required: true },
   isAdmin: { type: Boolean, default: false, immutable: true },
   password: { type: String, required: true },
+  updates: [
+    {
+      text: String,
+      created_at: { type: Date, default: new Date().toISOString() },
+    },
+  ],
 });
 
 // HOOKS

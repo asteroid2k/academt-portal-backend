@@ -116,6 +116,9 @@ const takeAssessment = async (req, res) => {
     await result.validate();
     await result.save();
 
+    user.updates.push({ text: `[${assessment.slug}]: Assessment completed` });
+    await user.save();
+
     res.status(200).json({ message: "Assessment submitted" });
   } catch (error) {
     handleError(res, error, "Could not submit assessment");
