@@ -100,8 +100,8 @@ const forgotPassword = async (req, res) => {
     if (!user) {
       throw new CustomError("User with this email not found");
     }
-    const code = genStr(24);
-    const expire_at = addMinutes(new Date(), 60);
+    const code = genStr(8);
+    const expire_at = addMinutes(new Date(), 10);
     await Code.create({ code, identifier: email, expire_at });
 
     sendMail("forgot", user, code);
@@ -113,7 +113,7 @@ const forgotPassword = async (req, res) => {
 
 // Reset user password using params from reset link
 const resetPassword = async (req, res) => {
-  const { password, email, code } = req.body;
+  const { password, code } = req.body;
 
   try {
     // verify reset code
@@ -124,9 +124,9 @@ const resetPassword = async (req, res) => {
     }
 
     // verify user
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ email: resetCode.identifier });
     if (!user) {
-      return res.status(404).json({ message: "Invalid email" });
+      return res.status(404).json({ message: "Invalid reset code" });
     }
 
     // check if it's expired

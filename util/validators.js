@@ -160,16 +160,16 @@ const forgotPasswordValidator = [
   //   .withMessage("Provide valid phone number"),
 ];
 const resetPasswordValidator = [
-  body("email")
-    .notEmpty()
-    .withMessage("Provide an email")
-    .isEmail()
-    .withMessage("Provide valid email"),
   body("code")
     .notEmpty()
     .withMessage("Provide reset code")
-    .isLength({ min: 24 })
+    .isLength({ min: 8, max: 8 })
     .withMessage("Provide valid code"),
+  body("password")
+    .notEmpty()
+    .withMessage("Provide a new password")
+    .isLength({ min: 8 })
+    .withMessage("Password must be at least 8 characters"),
 ];
 
 module.exports = {

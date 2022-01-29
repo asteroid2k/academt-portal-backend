@@ -24,7 +24,7 @@ const uploadFile = async (file) => {
 };
 
 const genStr = (length) => {
-  return crypto.randomBytes(length).toString("hex");
+  return crypto.randomBytes(length).toString("hex").substring(0, length);
 };
 
 const addMinutes = (dt, minutes) => {
