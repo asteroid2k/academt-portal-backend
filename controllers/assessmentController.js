@@ -125,9 +125,25 @@ const takeAssessment = async (req, res) => {
   }
 };
 
+const updateTimer = async (req, res) => {
+  try {
+    const { time } = req.body;
+    const assessment = await Assessment.findOne({ batch_id: req.params.id });
+    if (!assessment) {
+      throw new CustomError("Assessment not found", 404);
+    }
+    assessment.time_allocated = time;
+    await assessment.save();
+    res.status(200).json({ message: "Assessment time updated" });
+  } catch (error) {
+    handleError(res, error, "Could not update assessment");
+  }
+};
+
 module.exports = {
   getAssessments,
   createAssessment,
   getAssessment,
   takeAssessment,
+  updateTimer,
 };

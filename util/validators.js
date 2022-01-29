@@ -172,6 +172,52 @@ const resetPasswordValidator = [
     .withMessage("Password must be at least 8 characters"),
 ];
 
+const editProfileValidator = [
+  body("firstName")
+    .optional()
+    .trim()
+    .isLength({ min: 2 })
+    .withMessage("Firstname is too short"),
+  body("lastName")
+    .optional()
+    .trim()
+    .isLength({ min: 2 })
+    .withMessage("LastName is too short"),
+  body("country")
+    .optional()
+    .trim()
+    .isLength({ min: 2 })
+    .withMessage("Country is too short"),
+  body("address")
+    .optional()
+    .trim()
+    .isLength({ min: 2 })
+    .withMessage("Address is too short"),
+  body("phone")
+    .optional()
+    .trim()
+    .isLength({ min: 9 })
+    .withMessage("Phone is too short")
+    .isMobilePhone("any"),
+  body("email")
+    .optional()
+    .trim()
+    .isEmail()
+    .withMessage("Provide a valid email")
+    .normalizeEmail(),
+];
+
+const editAssessmentValidator = [
+  body("time")
+    .notEmpty()
+    .withMessage("Time is required")
+    .isNumeric()
+    .toInt()
+    .custom((value) => {
+      return value > 0;
+    }),
+];
+
 module.exports = {
   errorFormatter,
   registerValidator,
@@ -184,4 +230,6 @@ module.exports = {
   applicationStatusValidator,
   forgotPasswordValidator,
   resetPasswordValidator,
+  editProfileValidator,
+  editAssessmentValidator,
 };

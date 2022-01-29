@@ -4,12 +4,14 @@ const {
   createAssessment,
   getAssessment,
   takeAssessment,
+  updateTimer,
 } = require("../controllers/assessmentController");
 const { validateData } = require("../middleware/validation");
 const {
   assessmentValidator,
   idValidator,
   quizValidator,
+  editAssessmentValidator,
 } = require("../util/validators");
 const { verifyToken, verifyAdmin } = require("../middleware/auth");
 
@@ -18,12 +20,22 @@ assessRouter.use(verifyToken);
 
 assessRouter.get("/", getAssessments);
 assessRouter.get("/:id", validateData(idValidator), getAssessment);
+// take assessment
+assessRouter.post("/:id", validateData(quizValidator), takeAssessment);
+
+// create assessment
 assessRouter.post(
   "/",
   validateData(assessmentValidator),
   verifyAdmin,
   createAssessment
 );
-assessRouter.post("/:id", validateData(quizValidator), takeAssessment);
+// update assessment
+assessRouter.patch(
+  "/:id",
+  validateData(editAssessmentValidator),
+  verifyAdmin,
+  updateTimer
+);
 
 module.exports = assessRouter;
