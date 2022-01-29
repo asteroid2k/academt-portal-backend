@@ -2,6 +2,7 @@ const { CustomError } = require("../util/errors");
 const jwt = require("jsonwebtoken");
 const cloudinary = require("../config/cloudinary");
 const DatauriParser = require("datauri/parser");
+const crypto = require("crypto");
 
 const createJWT = ({ email, name }, duration = "1h") => {
   if (!(email || name)) {
@@ -22,4 +23,12 @@ const uploadFile = async (file) => {
   return upload.secure_url;
 };
 
-module.exports = { createJWT, uploadFile };
+const genStr = (length) => {
+  return crypto.randomBytes(length).toString("hex");
+};
+
+const addMinutes = (dt, minutes) => {
+  return new Date(dt.getTime() + minutes * 60000);
+};
+
+module.exports = { createJWT, uploadFile, genStr, addMinutes };

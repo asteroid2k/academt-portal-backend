@@ -147,6 +147,31 @@ const applicationStatusValidator = [
     }),
 ];
 
+const forgotPasswordValidator = [
+  body("email")
+    .notEmpty()
+    .withMessage("Provide an email")
+    .isEmail()
+    .withMessage("Provide valid email"),
+  // body("phone")
+  //   .optional()
+  //   .isMobilePhone("any")
+  //   .isLength({ min: 9 })
+  //   .withMessage("Provide valid phone number"),
+];
+const resetPasswordValidator = [
+  body("email")
+    .notEmpty()
+    .withMessage("Provide an email")
+    .isEmail()
+    .withMessage("Provide valid email"),
+  body("code")
+    .notEmpty()
+    .withMessage("Provide reset code")
+    .isLength({ min: 24 })
+    .withMessage("Provide valid code"),
+];
+
 module.exports = {
   errorFormatter,
   registerValidator,
@@ -157,4 +182,6 @@ module.exports = {
   submitApplicationValidator,
   quizValidator,
   applicationStatusValidator,
+  forgotPasswordValidator,
+  resetPasswordValidator,
 };
