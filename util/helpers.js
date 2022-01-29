@@ -20,7 +20,7 @@ const uploadFile = async (file) => {
   const upload = await cloudinary.uploader.upload(fileStr.content, {
     folder: "portal",
   });
-  return upload.secure_url;
+  return { url: upload.secure_url, public_id: upload.public_id };
 };
 
 const genStr = (length) => {

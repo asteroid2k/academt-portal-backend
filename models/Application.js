@@ -15,7 +15,9 @@ const applicationSchema = new mongoose.Schema({
   university: { type: String, required: true },
   isApproved: { type: String, default: "pending" },
   cv: String,
+  cv_id: String,
   image: String,
+  image_id: String,
   created_at: { type: String, default: new Date().toISOString() },
 });
 

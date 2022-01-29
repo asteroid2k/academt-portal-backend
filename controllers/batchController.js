@@ -59,7 +59,9 @@ const createBatch = async (req, res) => {
         throw new CustomError("File too large");
       }
 
-      newBatch.image = await uploadFile(req.file);
+      let { url, upload_id } = await uploadFile(req.file);
+      newBatch.image = url;
+      newBatch.image_id = upload_id;
     }
 
     newBatch.save();

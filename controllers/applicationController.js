@@ -58,8 +58,13 @@ const submitApplication = async (req, res) => {
         if (image[0].size > 500000 || cv[0].size > 500000) {
           throw new CustomError("File too large");
         }
-        newApp.cv = await uploadFile(cv[0]);
-        newApp.image = await uploadFile(image[0]);
+
+        let upload = await uploadFile(cv[0]);
+        newApp.cv = upload.url;
+        newApp.cv_id = upload.public_id;
+        upload = await uploadFile(image[0]);
+        newApp.image = upload.url;
+        newApp.image_id = upload.public_id;
       }
     }
 
