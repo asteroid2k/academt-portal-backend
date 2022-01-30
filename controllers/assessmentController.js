@@ -78,7 +78,7 @@ const takeAssessment = async (req, res) => {
     const { id } = req.params;
     const { answers, application } = req.body;
 
-    const uApplication = await Application.findById(application);
+    const uApplication = await Application.findOne({ user_id: user.id });
     if (!uApplication) {
       throw new CustomError("Your application was not found");
     }
