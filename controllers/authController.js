@@ -138,6 +138,8 @@ const resetPassword = async (req, res) => {
     user.password = password;
     await user.hashPassword();
     user.save();
+    resetCode.expire_at = new Date().toISOString();
+    resetCode.save();
 
     res.status(200).json({ message: "Password reset" });
   } catch (error) {

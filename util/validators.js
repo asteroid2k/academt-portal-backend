@@ -129,7 +129,7 @@ const submitApplicationValidator = [
 
 const quizValidator = [
   ...idValidator,
-  body("answers").isArray({ min: 1 }).withMessage("Answers required"),
+  body("answers").isArray().withMessage("Answers required"),
   body("application").notEmpty().isMongoId(),
 ];
 const applicationStatusValidator = [

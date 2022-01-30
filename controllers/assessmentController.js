@@ -31,7 +31,11 @@ const getAssessment = async (req, res) => {
     if (!assessment) {
       throw new CustomError("Not found", 404);
     }
-    res.status(200).json({ assessment });
+    const taken = await Result.exists({
+      batch_id: req.params.id,
+      user_id: req.user.id,
+    });
+    res.status(200).json({ assessment, taken });
   } catch (error) {
     handleError(res, error, "Could not fetch assessments");
   }
