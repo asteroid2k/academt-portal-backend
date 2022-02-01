@@ -10,6 +10,8 @@ const userSchema = new mongoose.Schema({
   address: { type: String },
   isAdmin: { type: Boolean, default: false, immutable: true },
   password: { type: String, required: true },
+  image: String,
+  image_id: String,
   updates: [
     {
       text: String,

@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const { CustomError, handleError } = require("../util/errors");
+const { uploadFile } = require("../util/helpers");
 
 const getUserDetails = (req, res) => {
   try {
@@ -33,7 +34,9 @@ const editDetails = async (req, res) => {
     user.country = country || user.country;
     user.address = address || user.address;
     if (req.file) {
-      console.log(req.file);
+      let { url, upload_id } = await uploadFile(req.file);
+      user.image = url;
+      user.image_id = upload_id;
     }
     await user.validate();
     await user.save();
