@@ -6,7 +6,10 @@ const getResults = async (req, res) => {
   try {
     const results = await Result.find()
       .select("-answers")
-      .populate("application", "firstName lastName email dob university gpa");
+      .populate(
+        "application",
+        "firstName lastName address batch_slug email dob university gpa"
+      );
     res.status(200).json({ results });
   } catch (error) {
     handleError(res, error, "Could not fetch results");

@@ -13,8 +13,9 @@ const assessmentSchema = new mongoose.Schema({
   answers: { type: [answerSchema], required: true },
   time_allocated: { type: Number, default: 30 },
   status: { type: String, default: "ongoing" },
+  question_count: Number,
+  created_at: { type: Date, default: new Date().toISOString() },
 });
 
 const Assessment = mongoose.model("Assessment", assessmentSchema);
-
 module.exports = Assessment;
