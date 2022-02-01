@@ -10,13 +10,14 @@ const getAssessments = async (req, res) => {
     const assessments = await Assessment.find(
       {},
       "-questions -answers"
-    ).populate("batch_id", "slug isClosed closure_date");
+    ).populate("batch_id", "isClosed closure_date -_id");
     assessments.forEach((assessment) => {
       if (assessment.batch_id.isClosed) {
         assessment.status = "taken";
         assessment.save();
       }
     });
+
     res.status(200).json({ assessments });
   } catch (error) {
     handleError(res, error, "Could not fetch assessments");
@@ -54,6 +55,7 @@ const createAssessment = async (req, res) => {
       batch_id: batch.id,
       questions,
       answers,
+      question_count: questions.length,
     });
 
     await newAssessment.validate();
@@ -76,9 +78,9 @@ const takeAssessment = async (req, res) => {
   try {
     const { user } = req;
     const { id } = req.params;
-    const { answers, application } = req.body;
+    const { answers } = req.body;
 
-    const uApplication = await Application.findById(application);
+    const uApplication = await Application.findOne({ user_id: user.id });
     if (!uApplication) {
       throw new CustomError("Your application was not found");
     }
@@ -111,7 +113,7 @@ const takeAssessment = async (req, res) => {
       score,
       user_id: user.id,
       batch_id: req.params.id,
-      application,
+      application: uApplication.id,
     });
     await result.validate();
     await result.save();
