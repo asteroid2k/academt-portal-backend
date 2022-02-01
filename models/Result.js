@@ -11,6 +11,7 @@ const resultSchema = new mongoose.Schema({
   },
   score: { type: Number, required: true },
   answers: { type: [answerSchema], required: true },
+  created_at: { type: Date, default: new Date(Date.now()).toISOString() },
 });
 
 const Result = mongoose.model("Result", resultSchema);

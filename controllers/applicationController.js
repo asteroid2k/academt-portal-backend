@@ -94,6 +94,11 @@ const updateApplicationStatus = async (req, res) => {
     if (!application) {
       throw new CustomError("Application not found", 404);
     }
+    if (application.isApproved === status) {
+      return res
+        .status(200)
+        .json({ message: `Application is already ${status}` });
+    }
     application.isApproved = status;
     await application.save();
 

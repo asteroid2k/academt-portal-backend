@@ -18,7 +18,7 @@ const applicationSchema = new mongoose.Schema({
   cv_id: String,
   image: String,
   image_id: String,
-  created_at: { type: String, default: new Date().toISOString() },
+  created_at: { type: Date, default: new Date(Date.now()).toISOString() },
 });
 
 const Application = mongoose.model("Application", applicationSchema);

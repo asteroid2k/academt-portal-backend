@@ -4,7 +4,7 @@ const cloudinary = require("../config/cloudinary");
 const DatauriParser = require("datauri/parser");
 const crypto = require("crypto");
 
-const createJWT = ({ email, name }, duration = "1h") => {
+const createJWT = ({ email, name }, duration = "2h") => {
   if (!(email || name)) {
     throw new CustomError("Could not authenticate");
   }

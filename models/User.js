@@ -13,7 +13,10 @@ const userSchema = new mongoose.Schema({
   updates: [
     {
       text: String,
-      created_at: { type: Date, default: new Date().toISOString() },
+      created_at: {
+        type: Date,
+        default: new Date(Date.now()).toISOString(),
+      },
     },
   ],
 });
