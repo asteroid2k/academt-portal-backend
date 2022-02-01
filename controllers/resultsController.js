@@ -8,7 +8,7 @@ const getResults = async (req, res) => {
       .select("-answers")
       .populate(
         "application",
-        "firstName lastName address batch_slug email dob university gpa"
+        "firstName lastName address batch_slug email dob university gpa age"
       );
     res.status(200).json({ results });
   } catch (error) {
