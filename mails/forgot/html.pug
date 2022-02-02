@@ -1,4 +1,60 @@
-p Hi #{name},
-p Forgot Password?
-p Use this code
-p #{code}
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    title Document
+    link(rel='preconnect', href='https://fonts.googleapis.com')
+    link(rel='preconnect', href='https://fonts.gstatic.com', crossorigin='')
+    link(href='https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap', rel='stylesheet')
+    style.
+      * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Inter;
+      }
+      .salut {
+      font-size: 1.5rem;
+      font-weight: 600;
+      }
+      .code {
+      font-size: 1.5rem;
+      font-weight: 700;
+      padding: 0.25rem 1rem;
+      background: rgba(118, 87, 211, 0.2);
+      border-radius: 4px;
+      width: fit-content;
+      margin: 0.5rem auto;
+      }
+      .info {
+      font-size: 14px;
+      font-weight: 300;
+      }
+      hr {
+      margin: 1rem 2rem;
+      }
+      .logo {
+      width: fit-content;
+      margin: 1rem auto;
+      }
+      .txt {
+      padding: 1rem 0;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      }
+  body
+    div
+      .banner
+        img(src='https://res.cloudinary.com/kuhnzzz/image/upload/v1643765169/image_2022-02-02_00-59-25_vddpqj.png', alt='', width='100%', height='200')
+      .txt
+        p.salut Hi there, #{name}
+        p Use the code below to create a new password
+        p.code #{code}
+        p.info Code expires in 15 minutes
+      hr
+      .logo
+        img(src='https://res.cloudinary.com/kuhnzzz/image/upload/v1643764325/enyata-purple_kpj7yx.svg', width='100', alt='')
