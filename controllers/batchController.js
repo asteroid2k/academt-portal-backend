@@ -47,7 +47,7 @@ const createBatch = async (req, res) => {
     const newBatch = new Batch({
       // name,
       slug,
-      closure_date,
+      closure_date: new Date(closure_date).toISOString(),
       isClosed,
       instructions,
     });

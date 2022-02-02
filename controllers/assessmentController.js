@@ -84,6 +84,15 @@ const takeAssessment = async (req, res) => {
     const { id } = req.params;
     const { answers } = req.body;
 
+    const batch = await Batch.findOne()
+      .where("closure_date")
+      .gt(new Date().toISOString());
+    console.log(batch.id);
+
+    if (!batch._id.equals(id)) {
+      throw new CustomError("Invalid assessment");
+    }
+
     const uApplication = await Application.findOne({ user_id: user.id });
     if (!uApplication) {
       throw new CustomError("Your application was not found");
@@ -127,6 +136,7 @@ const takeAssessment = async (req, res) => {
 
     res.status(200).json({ message: "Assessment submitted" });
   } catch (error) {
+    console.log(error);
     handleError(res, error, "Could not submit assessment");
   }
 };
