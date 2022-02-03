@@ -8,8 +8,8 @@ const questionSchema = new mongoose.Schema({
 });
 
 const answerSchema = new mongoose.Schema({
-  num: { type: Number, required: true },
-  value: { type: String, required: true, enum: ["A", "B", "C", "D"] },
+  num: { type: Number },
+  value: { type: String },
 });
 
 // const Question = mongoose.model("Question", questionSchema);
