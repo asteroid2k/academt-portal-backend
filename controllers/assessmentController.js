@@ -7,10 +7,9 @@ const Result = require("../models/Result");
 // get all assessments
 const getAssessments = async (req, res) => {
   try {
-    const assessments = await Assessment.find(
-      {},
-      "-questions -answers"
-    ).populate("batch_id", "isClosed closure_date -_id");
+    const assessments = await Assessment.find({}, "-questions -answers")
+      .populate("batch_id", "isClosed closure_date -_id")
+      .sort({ slug: "desc" });
     assessments.forEach((assessment) => {
       if (assessment.batch_id.isClosed) {
         assessment.status = "taken";

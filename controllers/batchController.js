@@ -3,7 +3,7 @@ const { CustomError, handleError } = require("../util/errors");
 const { uploadFile } = require("../util/helpers");
 
 const getBatches = async (req, res) => {
-  const today = new Date().toISOString();
+  const today = new Date();
   try {
     const { ongoing } = req.query;
     if (ongoing === "true") {
