@@ -72,7 +72,10 @@ const submitApplication = async (req, res) => {
     await newApp.save();
 
     // add update
-    user.updates.push({ text: `[${batch.slug}]: Application submitted` });
+    user.updates.push({
+      text: `[${batch.slug}]: Application submitted`,
+      created_at: Date.now(),
+    });
     await user.save();
 
     res.status(201).json({
@@ -106,6 +109,7 @@ const updateApplicationStatus = async (req, res) => {
     if (user) {
       user.updates.push({
         text: `[${application.batch_slug}]: Application ${status}`,
+        created_at: Date.now(),
       });
       await user.save();
     }

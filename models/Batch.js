@@ -13,7 +13,7 @@ const batchSchema = new mongoose.Schema(
   },
   {
     timestamps: {
-      createdAt: "created_at",
+      createdAt: "started_at",
     },
   }
 );

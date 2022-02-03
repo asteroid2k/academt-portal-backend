@@ -129,7 +129,10 @@ const takeAssessment = async (req, res) => {
     await result.validate();
     await result.save();
 
-    user.updates.push({ text: `[${assessment.slug}]: Assessment completed` });
+    user.updates.push({
+      text: `[${assessment.slug}]: Assessment completed`,
+      created_at: Date.now(),
+    });
     await user.save();
 
     res.status(200).json({ message: "Assessment submitted" });
