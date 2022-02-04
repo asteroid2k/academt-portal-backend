@@ -83,7 +83,7 @@ const takeAssessment = async (req, res) => {
     const { id } = req.params;
     const { answers } = req.body;
 
-    const batch = await Batch.findOne().where("closure_date").gt(Date.now());
+    // const batch = await Batch.findOne().where("closure_date").gt(Date.now());
 
     const uApplication = await Application.findOne({ user_id: user.id });
     if (!uApplication) {
@@ -93,9 +93,9 @@ const takeAssessment = async (req, res) => {
       throw new CustomError("Your application is not approved");
     }
 
-    if (!batch || !batch._id.equals(uApplication.id)) {
-      throw new CustomError("Invalid assessment");
-    }
+    // if (!batch || !batch._id.equals(uApplication.id)) {
+    //   throw new CustomError("Invalid assessment");
+    // }
 
     const assessment = await Assessment.findOne({
       batch_id: id,
