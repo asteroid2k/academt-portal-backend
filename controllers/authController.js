@@ -3,6 +3,7 @@ const Code = require("../models/Code");
 const { CustomError, handleError } = require("../util/errors");
 const { createJWT, genStr, addMinutes } = require("../util/helpers");
 const { sendMail } = require("../config/mailer");
+const Batch = require("../models/Batch");
 
 const login = async (req, res) => {
   try {
@@ -75,6 +76,11 @@ const register = async (req, res) => {
     if (await User.exists({ phone })) {
       throw new CustomError("Phone is taken");
     }
+    const batch = await Batch.findOne().where("closure_date").gt(Date.now());
+    if (!batch) {
+      throw new CustomError("No available batch");
+    }
+
     // create user with request data
     const newUser = new User({ firstName, lastName, email, phone, password });
     // upload image
