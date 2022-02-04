@@ -83,9 +83,7 @@ const takeAssessment = async (req, res) => {
     const { id } = req.params;
     const { answers } = req.body;
 
-    const batch = await Batch.findOne()
-      .where("closure_date")
-      .gt(new Date().toISOString());
+    const batch = await Batch.findOne().where("closure_date").gt(Date.now());
 
     const uApplication = await Application.findOne({ user_id: user.id });
     if (!uApplication) {
